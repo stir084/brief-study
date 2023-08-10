@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axios Example</title>
+</head>
+<body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+const request1 = axios.get('https://jsonplaceholder.typicode.com/posts');
+const request2 = axios.get('https://jsonplaceholder.typicode.com/posts');
+
+axios.all([request1, request2])
+  .then(axios.spread((response1, response2) => {
+    // response1.data와 response2.data를 사용하여 처리
+    console.log('Response from request 1:', response1.data);
+    console.log('Response from request 2:', response2.data);
+  }))
+  .catch(error => {
+    console.error('Error:', error);
+  });
+</script>
