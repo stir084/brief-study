@@ -1,17 +1,16 @@
 package com.example.java.streampracticing;
 
-import lombok.Data;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -250,4 +249,139 @@ public class StreamPraticing {
                 .findAny(); // 아무 이름이나 반환
         System.out.println(anyName.get()); //Booby나 Bob가 리턴됨
     }
+
+    @Test
+    void testtt(){
+        StreamDto streamDto1 = new StreamDto(1L, "철수");
+        StreamDto streamDto2 = new StreamDto(2L, "짱구");
+        StreamDto streamDto3 = new StreamDto(3L, "철수");
+        List<StreamDto> streamDtoList2 = new ArrayList<>();
+        streamDtoList2.add(streamDto1);
+        streamDtoList2.add(streamDto2);
+        streamDtoList2.add(streamDto3);
+
+        streamDtoList2.forEach(streamDto -> {
+            streamDto.setName("유리");
+        });
+
+
+    }
+
+    @Test
+    void ttttt() throws InterruptedException {
+        List<Integer> numberList = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            numberList.add(i);
+        }
+
+        // Using forEach
+      /*  Thread forEachThread = new Thread(() -> {
+            numberList.forEach(num -> {
+                if (num % 2 == 0) {
+                    numberList.remove(num);  // ConcurrentModificationException may occur
+                }
+            });
+        });
+
+        // Using Iterator
+        Thread iteratorThread = new Thread(() -> {
+            Iterator<Integer> iterator = numberList.iterator();
+            while (iterator.hasNext()) {
+                int num = iterator.next();
+                if (num % 2 == 0) {
+                    iterator.remove();  // Safe way to remove while iterating
+                }
+            }
+        });*/
+
+        Thread forLoopThread = new Thread(() -> {
+            List<Integer> toRemove = new ArrayList<>();
+            System.out.println(Thread.currentThread().getName());
+            for (int num : numberList) {
+                if (num % 2 == 0) {
+                    numberList.remove(num);
+                }
+            }
+            numberList.removeAll(toRemove);
+        });
+
+   //     forEachThread.start();
+     //   iteratorThread.start();
+        forLoopThread.start();
+      //  forEachThread.join();
+      //  iteratorThread.join();
+        forLoopThread.join();
+        System.out.println("Final List: " + numberList);
+    }
+
+    static class Element {
+        private int value;
+
+        public Element(int value) {
+            this.value = value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return Integer.toString(value);
+        }
+    }
+
+    @Test
+    void testst3() throws InterruptedException {
+        List<Element> elementList = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            elementList.add(new Element(i));
+        }
+
+        Thread thread = new Thread(() -> {
+            for (Element element : elementList) {
+                element.setValue(element.value * 2); // Safe modification using setter
+            }
+        });
+
+        thread.start();
+        thread.join();
+
+        System.out.println("Final List: " + elementList);
+    }
+    @Test
+    void test3t363() throws InterruptedException {
+        List<Element> elementList = new ArrayList<>();
+        for (int i = 1; i <= 1000; i++) {
+            elementList.add(new Element(i));
+        }
+
+        Thread thread = new Thread(() -> {
+            elementList.stream().forEach(element -> {
+                element.setValue(element.value * 2); // ConcurrentModificationException may occur
+            });
+        });
+
+        thread.start();
+        thread.join();
+
+        System.out.println("Final List: " + elementList);
+    }
+
+    @Test
+    void setsetset() {
+
+        List<Integer> numberList = new ArrayList<>();
+        for (int i = 1; i <= 10000; i++) {
+            numberList.add(i);
+        }
+
+        numberList.parallelStream().forEach(num -> {
+            num = num * 2;  // ConcurrentModificationException may occur
+            System.out.println(num); //찾았따 엉망진창 코드..
+        });
+
+        System.out.println("Final List: " + numberList);
+    }
 }
+
