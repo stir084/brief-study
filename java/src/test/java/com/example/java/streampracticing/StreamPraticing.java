@@ -108,6 +108,15 @@ public class StreamPraticing {
         streamDtoList.forEach(streamDto -> {
             assertEquals("유리", streamDto.getName());
         });
+
+        streamDtoList.stream().map(streamDto -> {
+            streamDto.setName("유리");
+            return streamDto;
+        }).toList();
+
+        streamDtoList.forEach(streamDto -> {
+            streamDto.setName("유리");
+        });
     }
 
     // Best Case - map 올바르게 사용하기
@@ -120,10 +129,10 @@ public class StreamPraticing {
         assertEquals(list1.size(), 3);
 
         //혹은 정적 팩토리 메소드 + 메소드 레퍼런스(::) 사용하기
-        List<StreamDto> list2 = streamDtoMap.entrySet().stream()
-                .map(StreamDto::createStreamDto2)
-                .toList(); // 자바 16부터 나온 새로운 기능이다. 좀 더 단순해짐.
-        assertEquals(list2.size(), 3);
+       // List<StreamDto> list2 = streamDtoMap.entrySet().stream()
+              //  .map(StreamDto::createStreamDto)
+               // .toList(); // 자바 16부터 나온 새로운 기능이다. 좀 더 단순해짐.
+      //  assertEquals(list2.size(), 3);
     }
 
     // stream 올바르게 사용하기
@@ -383,5 +392,7 @@ public class StreamPraticing {
 
         System.out.println("Final List: " + numberList);
     }
+
+
 }
 
